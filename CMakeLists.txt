@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(bowling)
 
 SET(CMAKE_CXX_STANDART 11)
-
+SET(CMAKE_CXX_COMPILER g++-8)
 SET(COMPILE_OPTIONS -Wpedantic -Wall -Wextra)
 
 add_executable(bowling main.cpp)

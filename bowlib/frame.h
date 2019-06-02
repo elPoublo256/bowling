@@ -62,6 +62,13 @@ uint16_t totoal_score(FramesIterator first, FramesIterator last)
              if(it + 1 < last) { result += (it + 1)->get_knoked_pins();}
              break;
             }
+
+        case Frame::Usal :
+        {
+            result += it->get_knoked_pins();
+            break;
+
+        }
             default:
             {
                   result += it->get_knoked_pins();

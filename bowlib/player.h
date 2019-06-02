@@ -7,7 +7,7 @@
 #include <functional>
 #include <cstdlib>
 #include <vector>
-pair_num_pins random_pins();
+pair_num_pins keybourd_pins();
 class Player
 {
 private:
@@ -19,18 +19,19 @@ private:
 public:
     Player(const std::string& name, std::function<Frame()> f);
     Player(const std::string& name, 
-           std::function<pair_num_pins()>f = random_pins);
+           std::function<pair_num_pins()>f = keybourd_pins);
     Player(const Player& copy);
+    void operator = (const Player& copy);
 
     virtual ~Player();
     inline std::string get_name() const {return _name;}
-    void print_status() const;
+    void print_status(std::ostream& s = std::cout) const;
     
     //соверщение игроком броска (вырожение заданное по умолчанию возвращает 
     //фрейм с рандомным числом сбитых кегель
     ///push_back a frame, created by expression way_to_drop to list
-     inline void drop_balls() const {list_frames.push_back(way_make_frame());}
-     inline Frame::TypeFrame type_list_frame() const
+     void drop_balls();
+     inline Frame::TypeFrame type_last_frame() const
      {return list_frames.front().get_type_frame();}
     
     

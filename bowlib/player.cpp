@@ -14,55 +14,87 @@ Player::Player(const Player& copy) : _name(copy._name),
 table_all_frames(copy.table_all_frames.str()),
 way_make_frame(copy.way_make_frame)
 {
-  std::cout<<"cc"<<std::endl;
+//  std::cout<<"cc"<<std::endl;
 }
 
+void Player::operator =(const Player& copy)
+{
+    _name = copy._name;
+   table_all_frames << copy.table_all_frames.str();
+   way_make_frame = copy.way_make_frame;
+}
 
 Player::~Player(){}
 
-void Player::print_status() const
-{   std::cout << std::endl<<std::endl<<std::endl;
-    std::cout<<"____________________________________________________"<<std::endl;
-    std::cout << _name << " dropped "<<list_frames.size()<<" balls";
-    std::cout << "-------------"<<std::endl;
-    for(Frame& f : list_frames)
-    {
-        
-        switch(f.get_type_frame())
-        {
-            case Frame::TypeFrame::Strike :
-            {
-                std::cout <<" [X]";
-                break;
-            }
-            case Frame::TypeFrame::Usal :
-            {
-                std::cout << "  ["<<int(f.get_first_balls_pins())
-                          << "|"<<int(f.get_second_balls_pins())
-                          << f.get_second_balls_pins()
-                          <<"]";
-                          break;
-            }
-            case Frame::TypeFrame::OpenFrame :
-            {std::cout << " [-]"; break;}
-            
-            case Frame::TypeFrame::Spare :
-            {
-              std::cout << " [S]"; break;
-            }
-                
-        }
-    }
-std::cout <<std::endl; 
-std::cout<<"Total:"<<int(totoal_score(list_frames.begin(), list_frames.end()))
-<<std::endl;
+void Player::print_status(std::ostream &s) const
+{
+
+    s << _name <<':'<<std::endl;
+    s << table_all_frames.str()<<std::endl;
+    s << "Total:"<< totoal_score(list_frames.begin(), list_frames.end()) << std::endl;
+    s << std::endl<<std::endl<<std::endl;
 }
 
-
-pair_num_pins random_pins()
+void Player::drop_balls()
 {
-    
-    uint8_t fist_ball = uint8_t(std::rand() % 10);
-    uint8_t second_ball = fist_ball == 10 ? 0 : (std::rand() % (10 - fist_ball));
-    return pair_num_pins{fist_ball,second_ball};
+    Frame new_frame(way_make_frame());
+    switch (new_frame.get_type_frame()) {
+    case Frame::TypeFrame::Strike :
+    {
+        table_all_frames << "[X]";
+        break;
+    }
+    case Frame::TypeFrame::OpenFrame :
+        {
+          table_all_frames << "[-]";
+          break;
+        }
+    case Frame::TypeFrame::Spare :
+        {
+          table_all_frames << "[S]";
+          break;
+        }
+    case Frame::TypeFrame::Usal :
+        {
+          table_all_frames << "["<<
+                           int(new_frame.get_first_balls_pins()) <<
+                              "|"<<
+                              int(new_frame.get_second_balls_pins())
+                           <<"]";
+          break;
+        }
+    default:
+        throw std::runtime_error("undefined type of frame");
+    }
+    list_frames.push_back(new_frame);
+}
+
+pair_num_pins keybourd_pins()
+{
+    int first_ball, second_ball;
+    do
+    {
+    std::cout << "print number pins in first ball"<<std::endl;
+    std::cin >> first_ball;
+    std::cout << "print number pins in second ball"<<std::endl;
+    std::cin >> second_ball;
+    if(first_ball + second_ball <= 10)
+    {
+        if(first_ball >=0 && second_ball >=0)
+        {
+            break;
+        }
+        else
+        {
+            std::cout << "all number pins shoul be positive"<<std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "summ number of pins in frame shold be no more 10"<<std::endl;
+    }
+    std::cout << "try again"<<std::endl;
+    }
+    while(true);
+    return pair_num_pins{uint8_t(first_ball),uint8_t(second_ball)};
 }
